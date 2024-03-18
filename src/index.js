@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Import React hooks
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom';
 import axios from 'axios'; // Import axios for making HTTP requests
 
 // Define App component
@@ -14,7 +14,7 @@ function App() {
 
   const fetchSinhViens = async () => {
     try {
-      const response = await axios.get('/api/sinhviens');
+      const response = await axios.get('https://65f859a3df151452460f2d81.mockapi.io/ql_diem_danh_sv');
       setSinhViens(response.data);
     } catch (error) {
       console.error('Error fetching sinh viens:', error);
@@ -31,7 +31,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/sinhviens', newSV);
+      await axios.post('https://65f859a3df151452460f2d81.mockapi.io/ql_diem_danh_sv', newSV);
       setNewSV({ mssv: '', name: '', grade: '', time: '', day: '' });
       fetchSinhViens(); 
     } catch (error) {
@@ -68,8 +68,5 @@ function App() {
   );
 }
 
-// Render App component into root element
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+// Render App component into root element using createRoot
+createRoot(document.getElementById('root')).render(<App />);
