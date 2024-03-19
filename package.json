@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node -r @babel/register index.js"
+    "start": "node -r @babel/register ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,8 @@
     "mysql": "^2.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "read-excel-file": "^5.7.1"
+    "read-excel-file": "^5.7.1",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",

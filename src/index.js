@@ -1,10 +1,46 @@
-import React, { useState, useEffect } from 'react'; // Import React hooks
-import { createRoot } from 'react-dom';
-import axios from 'axios'; // Import axios for making HTTP requests
+// index.js
 
-// Define App component
+import React, { useState, useEffect } from 'react';
+import { createRoot } from 'react-dom';
+import axios from 'axios';
+import styled from 'styled-components';
+
+// Styled components
+const Container = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f0f0f0;
+`;
+
+const Section = styled.div`
+  margin-top: 20px;
+`;
+
+const Title = styled.h1`
+  font-size: 32px;
+  color: #333;
+`;
+
+const StyledInput = styled.input`
+  padding: 10px;
+  margin-right: 10px;
+`;
+
+const StyledButton = styled.button`
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
 function App() {
-  // State hooks
   const [sinhViens, setSinhViens] = useState([]);
   const [newSV, setNewSV] = useState({ mssv: '', name: '', grade: '', time: '', day: '' });
 
@@ -21,13 +57,11 @@ function App() {
     }
   };
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewSV({ ...newSV, [name]: value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -39,34 +73,36 @@ function App() {
     }
   };
 
-  // Render App component UI
   return (
-    <div className="App">
-      <h1>Quản lí điểm danh sinh viên</h1>
-      <div>
+    <Container>
+      <Title>Quản lí điểm danh sinh viên</Title>
+      <Section>
         <h2>Danh sách sinh viên</h2>
         <ul>
           {sinhViens.map((sv, index) => (
             <li key={index}>
-              {sv.mssv} - {sv.name} - {sv.grade} - {sv.time} - {sv.day}
+              <strong>MSSV:</strong> {sv.mssv}<br />
+              <strong>Tên:</strong> {sv.name}<br />
+              <strong>Điểm:</strong> {sv.grade}<br />
+              <strong>Thời gian:</strong> {sv.time}<br />
+              <strong>Ngày:</strong> {sv.day}
             </li>
           ))}
         </ul>
-      </div>
-      <div>
+      </Section>
+      <Section>
         <h2>Thêm sinh viên mới</h2>
         <form onSubmit={handleSubmit}>
-          <input type="text" name="mssv" placeholder="MSSV" value={newSV.mssv} onChange={handleChange} />
-          <input type="text" name="name" placeholder="Name" value={newSV.name} onChange={handleChange} />
-          <input type="text" name="grade" placeholder="Grade" value={newSV.grade} onChange={handleChange} />
-          <input type="text" name="time" placeholder="Time" value={newSV.time} onChange={handleChange} />
-          <input type="text" name="day" placeholder="Day" value={newSV.day} onChange={handleChange} />
-          <button type="submit">Thêm</button>
+          <StyledInput type="text" name="mssv" placeholder="MSSV" value={newSV.mssv} onChange={handleChange} required />
+          <StyledInput type="text" name="name" placeholder="Tên" value={newSV.name} onChange={handleChange} required />
+          <StyledInput type="text" name="grade" placeholder="Điểm" value={newSV.grade} onChange={handleChange} required />
+          <StyledInput type="text" name="time" placeholder="Thời gian" value={newSV.time} onChange={handleChange} required />
+          <StyledInput type="text" name="day" placeholder="Ngày" value={newSV.day} onChange={handleChange} required />
+          <StyledButton type="submit">Thêm</StyledButton>
         </form>
-      </div>
-    </div>
+      </Section>
+    </Container>
   );
 }
 
-// Render App component into root element using createRoot
 createRoot(document.getElementById('root')).render(<App />);
