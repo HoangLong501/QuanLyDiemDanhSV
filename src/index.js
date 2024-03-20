@@ -1,48 +1,15 @@
-// index.js
+const React = require('react');
+const { useState, useEffect } = require('react');
+const axios = require('axios');
+const { createRoot } = require('react-dom');
+const { Container, Card, Form, Button, Navbar, Nav } = require('react-bootstrap');
+const bootstrapCSS = require('bootstrap/dist/css/bootstrap.min.css');
 
-import React, { useState, useEffect } from 'react';
-import { createRoot } from 'react-dom';
-import axios from 'axios';
-import styled from 'styled-components';
-
-// Styled components
-const Container = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f0f0f0;
-`;
-
-const Section = styled.div`
-  margin-top: 20px;
-`;
-
-const Title = styled.h1`
-  font-size: 32px;
-  color: #333;
-`;
-
-const StyledInput = styled.input`
-  padding: 10px;
-  margin-right: 10px;
-`;
-
-const StyledButton = styled.button`
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
 
 function App() {
   const [sinhViens, setSinhViens] = useState([]);
   const [newSV, setNewSV] = useState({ mssv: '', name: '', grade: '', time: '', day: '' });
+  const [editingSV, setEditingSV] = useState(null);
 
   useEffect(() => {
     fetchSinhViens();
@@ -57,9 +24,11 @@ function App() {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e, index) => {
     const { name, value } = e.target;
-    setNewSV({ ...newSV, [name]: value });
+    const updatedSinhViens = [...sinhViens];
+    updatedSinhViens[index][name] = value;
+    setSinhViens(updatedSinhViens);
   };
 
   const handleSubmit = async (e) => {
@@ -73,36 +42,129 @@ function App() {
     }
   };
 
+  const handleEdit = async (sv) => {
+    setEditingSV(sv);
+  };
+  const handleSaveEdit = async () => {
+    try {
+      await axios.put(`https://65f859a3df151452460f2d81.mockapi.io/ql_diem_danh_sv/${editingSV.id}`, editingSV);
+      fetchSinhViens();
+    } catch (error) {
+      console.error('Error updating sinh vien:', error);
+    }
+  };
+  
+  
+  
   return (
-    <Container>
-      <Title>Quản lí điểm danh sinh viên</Title>
-      <Section>
-        <h2>Danh sách sinh viên</h2>
-        <ul>
+    <>
+<Navbar bg="light" expand="lg">
+  <Container>
+    <Navbar.Brand href="#home">Đăng nhập</Navbar.Brand>
+    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+    <Navbar.Collapse id="basic-navbar-nav">
+      <Nav className="ml-auto">
+        <Button variant="primary">Đăng nhập</Button>
+      </Nav>
+    </Navbar.Collapse>
+  </Container>
+</Navbar>
+
+
+      <Container className="mt-5">
+        <h1>Quản lí điểm danh sinh viên</h1>
+        <div className="list-group">
           {sinhViens.map((sv, index) => (
-            <li key={index}>
-              <strong>MSSV:</strong> {sv.mssv}<br />
-              <strong>Tên:</strong> {sv.name}<br />
-              <strong>Điểm:</strong> {sv.grade}<br />
-              <strong>Thời gian:</strong> {sv.time}<br />
-              <strong>Ngày:</strong> {sv.day}
-            </li>
+            <div key={index} className="list-group-item mb-3">
+              <Card>
+                <Card.Body>
+                <Card.Title>Sinh viên {index + 1} - ID: {sv.id}</Card.Title>
+                  <Form>
+                    <Form.Group>
+                      <Form.Label>MSSV:</Form.Label>
+                      <Form.Control type="text" name="mssv" value={sv.mssv} onChange={(e) => handleChange(e, index)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Tên:</Form.Label>
+                      <Form.Control type="text" name="name" value={sv.name} onChange={(e) => handleChange(e, index)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Điểm:</Form.Label>
+                      <Form.Control type="text" name="grade" value={sv.grade} onChange={(e) => handleChange(e, index)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Thời gian:</Form.Label>
+                      <Form.Control type="text" name="time" value={sv.time} onChange={(e) => handleChange(e, index)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Ngày:</Form.Label>
+                      <Form.Control type="text" name="day" value={sv.day} onChange={(e) => handleChange(e, index)} />
+                    </Form.Group>
+                    <Button variant="primary" onClick={() => handleEdit(sv)}>Chỉnh sửa</Button>
+                  </Form>
+                </Card.Body>
+              </Card>
+            </div>
           ))}
-        </ul>
-      </Section>
-      <Section>
-        <h2>Thêm sinh viên mới</h2>
-        <form onSubmit={handleSubmit}>
-          <StyledInput type="text" name="mssv" placeholder="MSSV" value={newSV.mssv} onChange={handleChange} required />
-          <StyledInput type="text" name="name" placeholder="Tên" value={newSV.name} onChange={handleChange} required />
-          <StyledInput type="text" name="grade" placeholder="Điểm" value={newSV.grade} onChange={handleChange} required />
-          <StyledInput type="text" name="time" placeholder="Thời gian" value={newSV.time} onChange={handleChange} required />
-          <StyledInput type="text" name="day" placeholder="Ngày" value={newSV.day} onChange={handleChange} required />
-          <StyledButton type="submit">Thêm</StyledButton>
-        </form>
-      </Section>
+        </div>
+        {editingSV && (
+          <div className="mt-3">
+            <h2>Chỉnh sửa sinh viên</h2>
+            <Form onSubmit={handleSaveEdit}>
+              <Form.Group>
+                <Form.Label>MSSV:</Form.Label>
+                <Form.Control type="text" name="mssv" value={editingSV.mssv} onChange={(e) => setEditingSV({...editingSV, mssv: e.target.value})} />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Tên:</Form.Label>
+                <Form.Control type="text" name="name" value={editingSV.name} onChange={(e) => setEditingSV({...editingSV, name: e.target.value})} />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Điểm:</Form.Label>
+                <Form.Control type="text" name="grade" value={editingSV.grade} onChange={(e) => setEditingSV({...editingSV, grade: e.target.value})} />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Thời gian:</Form.Label>
+                <Form.Control type="text" name="time" value={editingSV.time} onChange={(e) => setEditingSV({...editingSV, time: e.target.value})} />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Ngày:</Form.Label>
+                <Form.Control type="text" name="day" value={editingSV.day} onChange={(e) => setEditingSV({...editingSV, day: e.target.value})} />
+              </Form.Group>
+              <Button type="submit" variant="primary">Lưu chỉnh sửa</Button>
+            </Form>
+          </div>
+        )}   
+        <div className="mt-3">
+          <h2>Thêm sinh viên mới</h2>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group>
+              <Form.Label>MSSV:</Form.Label>
+            <Form.Control type="text" name="mssv" placeholder="MSSV" value={newSV.mssv} onChange={(e) => setNewSV({...newSV, mssv: e.target.value})} required />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Tên:</Form.Label>
+            <Form.Control type="text" name="name" placeholder="Tên" value={newSV.name} onChange={(e) => setNewSV({...newSV, name: e.target.value})} required />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Điểm:</Form.Label>
+            <Form.Control type="text" name="grade" placeholder="Điểm" value={newSV.grade} onChange={(e) => setNewSV({...newSV, grade: e.target.value})} required />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Thời gian:</Form.Label>
+            <Form.Control type="text" name="time" placeholder="Thời gian" value={newSV.time} onChange={(e) => setNewSV({...newSV, time: e.target.value})} required />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Ngày:</Form.Label>
+            <Form.Control type="text" name="day" placeholder="Ngày" value={newSV.day} onChange={(e) => setNewSV({...newSV, day: e.target.value})} required />
+          </Form.Group>
+          <Button type="submit" variant="primary">Thêm</Button>
+        </Form>
+      </div>
     </Container>
+  </>
   );
 }
 
 createRoot(document.getElementById('root')).render(<App />);
+

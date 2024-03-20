@@ -10,14 +10,18 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/, // Áp dụng loader cho các file có đuôi .js
-        exclude: /node_modules/, // Loại trừ thư mục node_modules
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
         use: {
-          loader: 'babel-loader', // Sử dụng babel-loader
+          loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'], // Sử dụng các preset cần thiết cho React
+            presets: ['@babel/preset-env', '@babel/preset-react'],
           },
         },
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
