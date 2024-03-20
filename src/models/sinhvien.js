@@ -14,7 +14,13 @@ class SinhVien  {
     static insertSinhVien(sinhvien , callback){
         db.query('INSERT INTO sinhvien SET ?',sinhvien,callback);
     }
+    static updateSinhVien(mssv, sinhvien, callback) {
+        db.query('UPDATE sinhvien SET ? WHERE mssv = ?', [sinhvien, mssv], callback);
+    }
 
+    static deleteSinhVien(mssv, callback) {
+        db.query('DELETE FROM sinhvien WHERE mssv = ?', mssv, callback);
+    }
 };  
 
 module.exports = SinhVien;

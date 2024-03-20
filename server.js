@@ -2,6 +2,7 @@ const express = require('express');
 const readXlsxFile = require('read-excel-file/node');
 const moment = require('moment');
 const SinhVien = require('./src/models/sinhvien');
+const sinhvienRoutes = require('./src/routes/sinhvien_router');
 // const bodyParser = require('body-parser');
 const db = require('./src/config/db');
 
@@ -18,24 +19,20 @@ var arrIndex = new Array();
 var arrContent = new Array();
 var arr = new Array();
 var listSV = new Array();
-readXlsxFile("diemdanh.xlsx").then((rows) => {
-  for(let i = 1; i< rows.length; i++) {
-    let timeText = rows[i][3]; // Giả sử cột thời gian nằm ở cột thứ 4 (index 3)
-    let dateText = rows[i][4];
-    // let timeDatetime = moment(timeText, "hmm").format("HH:mm");
-    // let dateDatetime = moment(dateText, "MM-DD-YYYY");
-      let sinhvien = new SinhVien(rows[i][0],rows[i][1],rows[i][2],timeText,dateText);  
-      SinhVien.insertSinhVien(sinhvien);
-    // console.log(timeText);
-    // console.log(dateText);
+// readXlsxFile("diemdanh.xlsx").then((rows) => {
+//   for(let i = 1; i< rows.length; i++) {
+//     let timeText = rows[i][3]; // Giả sử cột thời gian nằm ở cột thứ 4 (index 3)
+//     let dateText = rows[i][4];
+//     // let timeDatetime = moment(timeText, "hmm").format("HH:mm");
+//     // let dateDatetime = moment(dateText, "MM-DD-YYYY");
+//       let sinhvien = new SinhVien(rows[i][0],rows[i][1],rows[i][2],timeText,dateText);  
+//       SinhVien.insertSinhVien(sinhvien);
+//     // console.log(timeText);
+//     // console.log(dateText);
 
-  }
-})
-app.get('/', function (req, res) {
-    //console.log(arrIndex);
-    //console.log(arrContent);
-    res.send(`<h1>${arrContent}</h1>`);      
-  });
+//   }
+// })
+ app.use('/sinhvien', sinhvienRoutes);
 
 app.listen(port, () => {
    
