@@ -3,15 +3,16 @@ const readXlsxFile = require('read-excel-file/node');
 const moment = require('moment');
 const SinhVien = require('./src/models/sinhvien');
 const sinhvienRoutes = require('./src/routes/sinhvien_router');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const db = require('./src/config/db');
-
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 const port = 4000;
 
-// app.use(bodyParser.urlencoded({ extended: false })); // Để xử lý dữ liệu form-urlencoded
-// app.use(bodyParser.json()); // Để xử lý dữ liệu JSON
+app.use(bodyParser.json()); // Để xử lý dữ liệu JSON
+app.use(bodyParser.urlencoded({ extended: true })); // Để xử lý dữ liệu form-urlencoded
  //db.connect();
 
 // app.use('/api',routes);
@@ -32,7 +33,7 @@ var listSV = new Array();
 
 //   }
 // })
- app.use('/sinhvien', sinhvienRoutes);
+app.use('/sinhvien', sinhvienRoutes);
 
 app.listen(port, () => {
    

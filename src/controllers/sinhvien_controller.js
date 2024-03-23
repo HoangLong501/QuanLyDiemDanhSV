@@ -14,6 +14,7 @@ const SinhVienController ={
     },
     createSV: (req, res ) => {
       const newSV = req.body;
+      console.log(req.body);
       SinhVien.insertSinhVien(newSV, (err, result) => {
         if (err) {
           console.error('Error creating user:', err);

@@ -12,7 +12,9 @@ class SinhVien  {
         db.query('select * from sinhvien' , callback);
     }
     static insertSinhVien(sinhvien , callback){
-        db.query('INSERT INTO sinhvien SET ?',sinhvien,callback);
+        const sql = 'INSERT INTO sinhvien (mssv, name, grade, time, day) VALUES (?, ?, ?, ?, ?)';
+        const values = [sinhvien.mssv, sinhvien.name, sinhvien.grade, sinhvien.time, sinhvien.day];
+        db.query(sql,values,callback);
     }
     static updateSinhVien(mssv, sinhvien, callback) {
         db.query('UPDATE sinhvien SET ? WHERE mssv = ?', [sinhvien, mssv], callback);
